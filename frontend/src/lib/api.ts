@@ -1,11 +1,11 @@
-export const fetchAPI = async (endpoint: string, options = {}) => {
-  const defaultOptions = {
+export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
+  const defaultOptions: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
     },
   };
   
-  const mergedOptions = {
+  const mergedOptions: RequestInit = {
     ...defaultOptions,
     ...options,
     headers: {
@@ -14,11 +14,18 @@ export const fetchAPI = async (endpoint: string, options = {}) => {
     },
   };
 
-  const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://127.0.0.1:1337';
+  const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || '';
   
   try {
     const response = await fetch(`${API_URL}/api${endpoint}`, mergedOptions);
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      throw new Error(`Unexpected non-JSON response: ${text.substring(0, 50)}`);
+    }
+
     return { response, data };
   } catch (error) {
     console.error('API Fetch Error:', error);
