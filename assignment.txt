@@ -1,0 +1,61 @@
+Full-Stack Engineer Assignment: Real-Time Chat App
+This assignment challenges you to build a basic real-time chat application using the
+following technologies:
+●​ Frontend: Next.js
+●​ Backend: Strapi
+●​ Real-time Communication: Socket.io
+Functionality:
+The application should allow users to:
+●​ Register and login with a username.
+●​ Join a chat room with a designated name.
+●​ Send and receive chat messages in real-time within the joined chat room.
+●​ See a list of currently active users in the chat room.
+Implementation Details:
+●​ Frontend (Next.js):
+○​ Create separate components for user registration/login, chat room
+interface, and individual chat messages.
+○​ Utilize Next.js functionalities like routing and data fetching to manage
+user authentication and chat data retrieval.
+○​ Implement Socket.io client-side to establish a connection with the
+backend and handle real-time communication.
+●​ Backend (Strapi):
+○​ Define a Content-Type in Strapi for storing chat messages.
+○​ Implement API endpoints for user registration/login and chat message
+creation/retrieval.
+
+○​ Utilize Strapi webhooks to trigger Socket.io server-side events when
+new messages are created.
+●​ Real-time Communication (Socket.io):
+○​ Use Socket.io server-side to establish a real-time connection between
+the frontend and backend.
+○​ Implement event listeners on the server to handle new message
+creation and broadcast messages to all connected clients in the same
+chat room.
+Additional Considerations:
+●​ Implement basic user authentication using username and password.
+(Optional: Implement social login with providers like Google or Facebook)
+●​ Style the chat interface using CSS frameworks like Bootstrap or Tailwind CSS.
+●​ Implement basic error handling and user feedback mechanisms.
+●​ Consider storing chat history in a database for future reference. (Optional)
+Deliverables:
+●​ A functional Next.js application demonstrating the chat functionality.
+●​ A Strapi project containing the necessary models and API endpoints.
+●​ Documentation outlining the implemented functionalities and code structure.
+Evaluation Criteria:
+●​ Code Quality and Readability
+●​ Functionality Completeness
+●​ Implementation of Best Practices (Next.js, Strapi, Socket.io)
+●​ User Interface Design and Usability
+●​ Overall Project Structure and Documentation
+Additional Notes:
+
+This assignment is intended to assess your understanding of the mentioned
+technologies and your ability to build a real-time application. You can feel free to
+utilize additional libraries or frameworks as needed to enhance the functionality or
+user experience.
+Time Estimate:
+This assignment is estimated to take approximately 8-12 hours to complete,
+depending on your experience level.
+Good luck!
+
+
