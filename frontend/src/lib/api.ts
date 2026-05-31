@@ -1,4 +1,4 @@
-export const fetchAPI = async (endpoint: string, options = {}) => {
+export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
   const defaultOptions = {
     headers: {
       'Content-Type': 'application/json',
