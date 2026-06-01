@@ -50,15 +50,19 @@ export default function ChatRoom() {
 
   useEffect(() => {
     if (inRoom && token && user) {
-      // Use window.location.origin so Socket.IO connects through Next.js rewrites
-      const newSocket = io(undefined, {
-        auth: { token },
-        query: { room, username: user.username },
-        transports: ['websocket', 'polling'],
+      // Connect directly to backend Socket.IO server
+      const backendUrl = typeof window !== 'undefined' 
+        ? window.location.origin.replace(/:3000/, ':1337').replace(/:3001/, ':1337')
+        : 'http://localhost:1337';
+      
+      const newSocket = io(backendUrl, {
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
         reconnectionAttempts: 5,
+        transports: ['websocket', 'polling'],
+        auth: { token },
+        query: { room, username: user.username },
       });
 
       newSocket.on('connect', () => {
