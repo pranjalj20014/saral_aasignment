@@ -9,13 +9,16 @@ export default {
     // Create Socket.IO server and attach to Strapi's HTTP server
     const io = new Server(strapi.server.httpServer, {
       cors: {
-        origin: '*', // Adjust for production!
-        methods: ['GET', 'POST'],
+        origin: ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001'],
+        credentials: true,
+        methods: ['GET', 'POST', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
       },
       transports: ['websocket', 'polling'],
       pingInterval: 25000,
       pingTimeout: 60000,
       allowEIO3: true,
+      serveClient: true,
     });
 
     const activeUsersByRoom = new Map();
