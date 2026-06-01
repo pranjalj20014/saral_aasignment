@@ -13,11 +13,9 @@ export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
       ...(options.headers || {}),
     },
   };
-
-  const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || '';
   
   try {
-    const response = await fetch(`${API_URL}/api${endpoint}`, mergedOptions);
+    const response = await fetch(`/api${endpoint}`, mergedOptions);
     const text = await response.text();
     let data;
     try {
