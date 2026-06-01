@@ -3,8 +3,39 @@
 export default {
   register(/* { strapi }: { strapi: Core.Strapi } */) {},
 
-  bootstrap({ strapi }) {
+  async bootstrap({ strapi }) {
     const { Server } = require('socket.io');
+
+    // Pre-seed messages for ECE department
+    const targetRoom = 'XYZ college ECE dpt.';
+    try {
+      const existingMessages = await strapi.entityService.findMany('api::message.message', {
+        filters: { room: targetRoom },
+        limit: 1,
+      });
+
+      if (!existingMessages || existingMessages.length === 0) {
+        console.log(`Seeding messages for room: ${targetRoom}...`);
+        const seedData = [
+          { sender: 'Alice_ECE', text: 'Hey guys, did you see the new exam schedule? It is very hectic!', room: targetRoom },
+          { sender: 'Bob_ECE', text: 'Yeah, I just saw it. Three exams in two days is insane.', room: targetRoom },
+          { sender: 'Charlie_ECE', text: 'I heard the ECE department might reconsider if we complain.', room: targetRoom },
+          { sender: 'Alice_ECE', text: 'Hopefully! I have no idea how to prepare for VLSI and Microprocessors back-to-back.', room: targetRoom }
+        ];
+
+        for (const msg of seedData) {
+          await strapi.entityService.create('api::message.message', {
+            data: {
+              ...msg,
+              publishedAt: new Date(),
+            }
+          });
+        }
+        console.log('Successfully seeded messages.');
+      }
+    } catch (err) {
+      console.error('Error seeding messages:', err);
+    }
 
     // Create Socket.IO server and attach to Strapi's HTTP server
     const io = new Server(strapi.server.httpServer, {

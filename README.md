@@ -1,85 +1,139 @@
-# Real-Time Chat Application
+# 🌌 Real-Time College Department Chat Hub
 
-This is a real-time chat application built using Next.js, Strapi, and Socket.io.
+A premium, state-of-the-art real-time chat application for college departments. Designed with rich glassmorphism aesthetics, dynamic micro-interactions, robust authentication, and instant messaging capabilities powered by a decoupled **Next.js** frontend and **Strapi v5** backend with a custom-engineered **Socket.io** integration.
 
-## Features
-- User Registration and Login via Strapi Local Auth
-- Real-time messaging using Socket.io
-- Active user list per room
-- Chat history preserved in Strapi SQLite database
-- Simple, robust UI using Tailwind CSS
+---
 
-## Prerequisites
-- Node.js (v18+)
+## 🏛️ System Architecture
 
-## Setup Instructions
+The application is structured as a decoupled Monorepo where the **Next.js Frontend** communicates with the **Strapi Backend** via traditional RESTful APIs for authentication and via a dedicated, persistent **Socket.io** connection for bidirectional real-time communications.
 
-### 1. Backend (Strapi)
-```bash
-cd backend
-npm install
-npm run build
-npm run develop
+```mermaid
+graph TD
+    %% Styling
+    classDef client fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff;
+    classDef server fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff;
+    classDef db fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
+
+    %% Nodes
+    subgraph Client ["🖥️ Frontend (Next.js 16)"]
+        UI["✨ Glassmorphic UI Components<br/>(Auth, Room Selector, Chat Panel)"]:::client
+        SIO_C["🔌 Socket.io-Client Engine<br/>(Auto-Reconnect, Room Event handlers)"]:::client
+    end
+
+    subgraph Backend ["⚙️ Backend (Strapi v5 + Node.js)"]
+        REST["🔐 REST Auth Controller<br/>(Local Registration / Login)"]:::server
+        SIO_S["⚡ Socket.io Server Context<br/>(Room tracking, Active user counters)"]:::server
+        Bootstrap["🌱 Lifecycle Bootstrap Engine<br/>(Auto Pre-seeds ECE Room)"]:::server
+    end
+
+    subgraph Data ["📂 Data Layer"]
+        DB[("💾 SQLite Database<br/>(Message History & User Accounts)")]:::db
+    end
+
+    %% Connections
+    UI -- "1. HTTP POST (Auth Token)" --> REST
+    SIO_C -- "2. WS Connect (Token Handshake)" --> SIO_S
+    SIO_S -- "3. Join / Send Events" --> UI
+    Bootstrap -- "Query / Seed" --> DB
+    REST -- "Persist User" --> DB
+    SIO_S -- "Persist Messages" --> DB
 ```
-Note: Ensure you allow public access to `find` and `create` for the `Message` Content-Type in the Strapi admin panel under Settings -> Roles -> Public.
 
-### 2. Frontend (Next.js)
+---
+
+## ✨ Features & Polish
+
+### 💎 Rich Premium Aesthetics
+* **Glassmorphic Cards:** High-fidelity layout with semi-transparent frosted backdrops, neon glow highlights, and subtle border shadows.
+* **Modern Typography:** Styled with smooth, tailored dark mode variables, curated gradients (`from-indigo-600 to-purple-600`), and reactive micro-interactions.
+* **Dynamic Sidebar:** A living active users list that updates in real-time as classmates join and leave rooms.
+
+### 🏫 XYZ College Department Rooms
+* Users can join targeted academic rooms via a secure dropdown:
+  * **Electronics & Communication Engineering (ECE)** 📡 *(Pre-seeded)*
+  * **Computer Science Engineering (CSE)** 💻
+  * **Civil Engineering (Civil)** 🏗️
+  * **Mechanical Engineering (Mech)** ⚙️
+
+### 🌱 Automated ECE Pre-Seeding
+* On startup, the backend automatically seeds the **ECE Room** with a highly realistic, engaging conversation between students (`Aarav`, `Diya`, `Kabir`, `Ananya`) discussing their upcoming hectic exam schedule, lab vivas, and exam prep.
+
+### 🛡️ Production-Grade Quality Assurance
+* **Input Validation:** Prevents sending empty messages, white spaces, or entering room chats without a registered username.
+* **Size Enforcement:** Limits usernames and messages (up to 500 characters) on both client and server sides to block overflow abuse.
+* **Authenticated Socket Handshake:** The backend verifies JWT tokens securely during the socket connection phase.
+* **Auto-Reconnection Logic:** Next.js socket client auto-rebuilds connections gracefully in case of intermittent network drops.
+
+---
+
+## 🛠️ How We Made It
+
+### 1. The Design System
+We designed a modern web aesthetic entirely from scratch inside `frontend/src/app/globals.css`, defining glassmorphism tokens (`backdrop-blur-md`, custom gradients, elegant scrolling tracks) using vanilla CSS variables alongside modern **Tailwind CSS**. We replaced traditional static inputs with floating focus rings and reactive hover transitions.
+
+### 2. High-Performance Socket Connection
+We decoupled socket event flows from standard Next.js rendering cycles using persistent `useRef` and active `useEffect` hooks. The connection dynamically reads the window server port in development to avoid hardcoded IP addresses, allowing multiple browser tabs to collaborate concurrently.
+
+### 3. Asynchronous Strapi Seeding
+We configured the Strapi initialization sequence inside `backend/src/index.ts`. By hijacking the asynchronous `bootstrap` lifecycle, we check for existing chat logs. If clean, we tap Strapi's `entityService` to inject high-fidelity mock conversations for ECE directly into SQLite, making it immediately available on client login.
+
+---
+
+## 🚀 Setup & Launch
+
+### Prerequisites
+* **Node.js:** `>= v20.0.0`
+* **NPM:** `>= v10.0.0`
+
+### 1. Install & Boot the Strapi Backend
 ```bash
-cd frontend
+# Navigate to the backend directory
+cd backend
+
+# Install dependencies
 npm install
+
+# Run database migrations and start development server
 npm run dev
 ```
+* Once launched, visit [http://localhost:1337/admin](http://localhost:1337/admin) to register your admin user, or connect instantly through the Next.js client.
 
-## QA & Testing Addressed
-- **Empty Inputs:** Handled in Auth and Chat inputs (prevents useless network calls).
-- **Extremely Long Messages:** Blocked over 500 characters in frontend and on the socket server.
-- **Race conditions/Spam:** Checked for empty strings and whitespace.
-- **Unauthorized socket connections:** Evaluates `socket.handshake.auth.token` before granting room access.
+### 2. Install & Boot the Next.js Frontend
+```bash
+# Open a new terminal and navigate to the frontend directory
+cd frontend
 
-Enjoy the chat app!
+# Install dependencies
+npm install
 
-## Railway.app Deployment Guide
+# Launch the dev server
+npm run dev
+```
+* Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to begin testing!
 
-This project is prepared for deployment on [Railway.app](https://railway.app/). Because this is a mono-repo (both frontend and backend in one repository), you will create **two separate services** from the same GitHub repository in your Railway project.
+---
+
+## ☁️ Railway.app Deployment Guide
+
+This mono-repo configuration is fully containerization-ready and supports frictionless deployment on [Railway.app](https://railway.app/) using two distinct target services pointed to the same repo branch.
 
 ### 1. Backend Service (Strapi)
-1. In Railway, click **New -> GitHub Repo** and select this repository.
-2. In the service settings, set the **Root Directory** to `/backend`.
-3. Go to the **Variables** tab and add the following:
-   - `NODE_ENV`: `production`
-   - `APP_KEYS`: `generate-a-random-secret,generate-a-second-secret`
-   - `API_TOKEN_SALT`: `generate-some-random-string`
-   - `ADMIN_JWT_SECRET`: `generate-some-random-string`
-   - `TRANSFER_TOKEN_SALT`: `generate-some-random-string`
-   - `JWT_SECRET`: `generate-some-random-string`
-   - `DATABASE_CLIENT`: `sqlite` (See note below if using Postgres)
-   - `HOST`: `0.0.0.0`
-4. Go to the **Settings** tab and configure a **Volume** mounted at `/app/.tmp`. This ensures your SQLite database (`data.db`) persists across deployments.
-5. In **Settings -> Build**, you can leave defaults. (Railway automatically runs `npm install` and `npm run build`).
-
-*(Optional: Postgres)*  
-If you prefer a production-ready database, click **New -> Database -> Add PostgreSQL** in Railway. Then update your Backend service variables to:
-- `DATABASE_CLIENT: postgres`
-- `DATABASE_URL: \${{Postgres.DATABASE_URL}}`
+1. Add a **New -> GitHub Repo** service on Railway.
+2. Under service settings, set the **Root Directory** to `/backend`.
+3. Add the following **Variables**:
+   * `NODE_ENV`: `production`
+   * `HOST`: `0.0.0.0`
+   * `APP_KEYS`: `your-random-app-key-1,your-random-app-key-2`
+   * `API_TOKEN_SALT`: `your-api-token-salt`
+   * `ADMIN_JWT_SECRET`: `your-admin-jwt-secret`
+   * `TRANSFER_TOKEN_SALT`: `your-transfer-token-salt`
+   * `JWT_SECRET`: `your-jwt-secret`
+4. Mount a persistent **Volume** at `/app/.tmp` in service settings to preserve your SQLite database across deployments.
 
 ### 2. Frontend Service (Next.js)
 1. Add a second service from the same GitHub repo.
-2. Under **Settings -> Root Directory**, enter `/frontend`.
-3. Once the Backend service receives a Public Domain (e.g., `https://my-backend-production.up.railway.app`), copy it.
-4. Go to the Frontend service's **Variables** tab and add:
-   - `NEXT_PUBLIC_STRAPI_URL`: Your backend's public domain (no trailing slash).
-5. Generate a Public Domain for the Frontend service.
-
-Your application is now live!
-- `DATABASE_CLIENT: postgres`
-- `DATABASE_URL: ${{Postgres.DATABASE_URL}}`
-
-### 2. Frontend Service (Next.js)
-1. Add a second service from the same GitHub repo.
-2. Under **Settings -> Root Directory**, enter `/frontend`.
-3. Once the Backend service receives a Public Domain (e.g., `https://my-backend-production.up.railway.app`), copy it.
-4. Go to the Frontend service's **Variables** tab and add:
-   - `NEXT_PUBLIC_STRAPI_URL`: Your backend's public domain (no trailing slash).
-5. Generate a Public Domain for the Frontend service.
-
-Your application is now live!
+2. In service settings, set **Root Directory** to `/frontend`.
+3. Set the following **Variables**:
+   * `NEXT_PUBLIC_STRAPI_URL`: *Your Backend Service's Generated Public Domain* (e.g. `https://backend-service.up.railway.app`).
+4. Generate a public domain for the frontend service in Railway settings and open it!

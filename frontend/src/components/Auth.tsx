@@ -17,7 +17,7 @@ export default function Auth() {
     e.preventDefault();
     setError('');
 
-    // QA Validation - Negative Scenarios
+    // Validation
     if (!username.trim() && !isLogin) {
       setError('Username is required');
       return;
@@ -65,26 +65,37 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white rounded-lg shadow-md w-full max-w-sm p-6">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          {isLogin ? 'Login to Chat' : 'Register for Chat'}
-        </h2>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-fade-in relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-500/20 rounded-full blur-[100px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-500/20 rounded-full blur-[100px]" />
+      
+      <div className="glass rounded-2xl w-full max-w-md p-8 relative z-10">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gradient mb-2">
+            {isLogin ? 'Welcome Back' : 'Join the Network'}
+          </h2>
+          <p className="text-slate-400 text-sm">
+            {isLogin ? 'Sign in to continue your conversations' : 'Create an account to start chatting'}
+          </p>
+        </div>
+
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+          <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm backdrop-blur-sm" role="alert">
             <span className="block sm:inline">{error}</span>
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           {!isLogin && (
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+              <label className="block text-slate-300 text-xs font-semibold mb-1 uppercase tracking-wider" htmlFor="username">
                 Username
               </label>
               <input
                 id="username"
                 type="text"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-2.5 px-4 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="SecureUser123"
@@ -92,26 +103,26 @@ export default function Auth() {
             </div>
           )}
           <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            <label className="block text-slate-300 text-xs font-semibold mb-1 uppercase tracking-wider" htmlFor="email">
               {isLogin ? 'Email or Username' : 'Email'}
             </label>
             <input
               id="email"
               type={isLogin ? 'text' : 'email'}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-2.5 px-4 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+            <label className="block text-slate-300 text-xs font-semibold mb-1 uppercase tracking-wider" htmlFor="password">
               Password
             </label>
             <input
               id="password"
               type="password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-2.5 px-4 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
@@ -121,20 +132,21 @@ export default function Auth() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-blue-500/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 transition-all ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            {loading ? 'Processing...' : isLogin ? 'Login' : 'Register'}
+            {loading ? 'Authenticating...' : isLogin ? 'Sign In' : 'Create Account'}
           </button>
         </form>
-        <div className="mt-4 text-center">
+
+        <div className="mt-6 text-center">
           <button
             onClick={() => {
               setIsLogin(!isLogin);
               setError('');
             }}
-            className="text-sm text-blue-500 hover:text-blue-800"
+            className="text-sm text-slate-400 hover:text-blue-400 transition-colors"
           >
-            {isLogin ? 'Need an account? Register here' : 'Already have an account? Login here'}
+            {isLogin ? 'Need an account? Register here' : 'Already have an account? Sign in'}
           </button>
         </div>
       </div>
