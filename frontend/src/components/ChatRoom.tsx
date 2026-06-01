@@ -54,12 +54,26 @@ export default function ChatRoom() {
       
       const newSocket = io(URL, {
         auth: { token },
-        query: { room, username: user.username }
+        query: { room, username: user.username },
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 5,
+      });
+
+      newSocket.on('connect', () => {
+        console.log('Socket connected successfully');
+        setError('');
       });
 
       newSocket.on('connect_error', (err) => {
         console.error('Socket connection error:', err);
         setError('Failed to connect to chat server (Network/Server offline)');
+      });
+
+      newSocket.on('disconnect', (reason) => {
+        console.log('Socket disconnected:', reason);
       });
 
       newSocket.on('message', (incomingMessage: Message) => {

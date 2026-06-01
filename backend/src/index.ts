@@ -12,6 +12,10 @@ export default {
         origin: '*', // Adjust for production!
         methods: ['GET', 'POST'],
       },
+      transports: ['websocket', 'polling'],
+      pingInterval: 25000,
+      pingTimeout: 60000,
+      allowEIO3: true,
     });
 
     const activeUsersByRoom = new Map();
