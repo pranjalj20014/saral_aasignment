@@ -50,9 +50,8 @@ export default function ChatRoom() {
 
   useEffect(() => {
     if (inRoom && token && user) {
-      const URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
-      
-      const newSocket = io(URL, {
+      // Use window.location.origin so Socket.IO connects through Next.js rewrites
+      const newSocket = io(undefined, {
         auth: { token },
         query: { room, username: user.username },
         transports: ['websocket', 'polling'],
